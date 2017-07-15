@@ -8,9 +8,9 @@
 
 ## TODO
 - [x] Migration
-- [] Seeder
-- [] Command/Bash 上运行
-- [] 优化代码
+- [ ] Seeder
+- [ ] Command/Bash 上运行
+- [ ] 优化代码
 
 ## Requirements
 - Windows/Linux/macOS
