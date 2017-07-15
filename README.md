@@ -7,6 +7,7 @@
 - 目前组件 Migration（表管理）、Seeder（数据管理）
 
 ## TODO
+- [x] MySql Adapter
 - [x] Migration
 - [ ] Seeder
 - [ ] Command/Bash 上运行
