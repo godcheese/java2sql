@@ -7,8 +7,10 @@
 - 目前组件 Migration（表管理）、Seeder（数据管理）
 
 ## TODO
-<t> 数据表构建
-<#> 数据填充
+- [x] Migration
+- [] Seeder
+- [] Command/Bash 上运行
+- [] 优化代码
 
 ## Requirements
 - Windows/Linux/macOS
@@ -20,7 +22,7 @@
 
 ## Changelog
 ### 2017.07.15
-- 实现　Migrate、Seed 等基本功能
+- 实现　Migration、Seeder 等基本功能
 ## Screenshots
 ## Discussing
 - Email:godcheese@outlook.com
