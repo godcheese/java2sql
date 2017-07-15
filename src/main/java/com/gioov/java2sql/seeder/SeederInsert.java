@@ -10,11 +10,11 @@ import java.util.Map;
 public class SeederInsert {
 
 
-    private Map<String,Object> sets;
+    private Map<String, Object> sets;
 
 
-    public SeederInsert(){
-        sets=new LinkedHashMap<>();
+    public SeederInsert() {
+        sets = new LinkedHashMap<>();
 
     }
 
@@ -23,7 +23,7 @@ public class SeederInsert {
     }
 
     public void setSet(String field, Object value) {
-        sets.put(field,value);
+        sets.put(field, value);
     }
 
 }

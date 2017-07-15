@@ -6,9 +6,7 @@ package com.gioov.java2sql.migration;
 public class ForeignKey {
 
     /**
-     *
      * CONSTRAINT `role_permissions` FOREIGN KEY (`api_id`) REFERENCES `apis`(`id`) ON UPDATE CASCADE ON DELETE ON CASCADE
-     *
      */
 
     private String table;

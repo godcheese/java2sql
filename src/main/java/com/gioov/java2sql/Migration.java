@@ -2,39 +2,21 @@ package com.gioov.java2sql;
 
 import com.gioov.java2sql.migration.Field;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by godcheese on 2017/7/14.
  */
 public class Migration {
 
-    private List <Object> tasks;
+    private List<Object> tasks;
     private Object task;
 
-    private String table="NewTable";
-    private String engine="InnoDB";
-    private String characterSet="utf8mb4";
-    private String collate="utf8mb4_unicode_ci";
-    private String rowFormat="DYNAMIC";
-    private Integer autoIncrement=null;
+    private DatabaseConfig databaseConfig;
     private StringBuilder sql;
-
-    public String getRowFormat() {
-        return rowFormat;
-    }
-
-    public void setRowFormat(String rowFormat) {
-        this.rowFormat = rowFormat;
-    }
-
-    public Integer getAutoIncrement() {
-        return autoIncrement;
-    }
-
-    public void setAutoIncrement(Integer autoIncrement) {
-        this.autoIncrement = autoIncrement;
-    }
 
     public StringBuilder getSql() {
         return sql;
@@ -44,49 +26,17 @@ public class Migration {
         this.sql = sql;
     }
 
-
-    public Migration(){
-        tasks= new ArrayList<>();
-        sql=new StringBuilder();
-    }
-
-    public String getTable() {
-        return table;
-    }
-
-    public void setTable(String table) {
-        this.table = table;
-    }
-
-    public String getEngine() {
-        return engine;
-    }
-
-    public void setEngine(String engine) {
-        this.engine = engine;
-    }
-
-    public String getCharacterSet() {
-        return characterSet;
-    }
-
-    public void setCharacterSet(String characterSet) {
-        this.characterSet = characterSet;
-    }
-
-    public String getCollate() {
-        return collate;
-    }
-
-    public void setCollate(String collate) {
-        this.collate = collate;
+    public Migration(DatabaseConfig databaseConfig) {
+        tasks = new ArrayList<>();
+        sql = new StringBuilder();
+        this.databaseConfig = databaseConfig;
     }
 
     public List<Object> getTasks() {
         return tasks;
     }
 
-    public void setTask(Object task){
+    public void setTask(Object task) {
         tasks.add(task);
     }
 
@@ -102,7 +52,6 @@ public class Migration {
         stringFields.add("varchar");
         stringFields.add("char");
         stringFields.add("text");
-
 
 
         if (tasks.size() > 0) {
@@ -175,7 +124,7 @@ public class Migration {
                         if (f.toLowerCase().equals(type)) {
 
 
-                            if(isUnsigned){
+                            if (isUnsigned) {
                                 sql.append(" UNSIGNED ");
                             }
 
@@ -194,7 +143,7 @@ public class Migration {
                             // character set
                             sql.append(" CHARACTER SET ");
                             if (characterSet == null) {
-                                sql.append(getCharacterSet());
+                                sql.append(databaseConfig.getAdapter().getCharacterSet());
                             } else {
                                 sql.append(characterSet);
                             }
@@ -202,10 +151,10 @@ public class Migration {
 
                             // collate
                             sql.append(" COLLATE ");
-                            if (collate == null) {
-                                sql.append(getCollate());
+                            if (collate != null) {
+                                sql.append(collate);
                             } else {
-                                sql.append(getCollate());
+                                sql.append(databaseConfig.getAdapter().getCollate());
                             }
                             sql.append(" ");
                         }
@@ -247,29 +196,29 @@ public class Migration {
         }
     }
 
-    public String execute(){
+    public String execute() {
         toSql(tasks);
         sql.toString();
-        sql.insert(0," ( ");
-        sql.insert(0,"`");
-        sql.insert(0,getTable());
-        sql.insert(0,"`");
-        sql.insert(0," CREATE TABLE ");
+        sql.insert(0, " ( ");
+        sql.insert(0, "`");
+        sql.insert(0, databaseConfig.getAdapter().getTable());
+        sql.insert(0, "`");
+        sql.insert(0, " CREATE TABLE ");
 
 
         sql.append(" ) ");
         sql.append(" ENGINE= ");
-        sql.append(getEngine());
+        sql.append(databaseConfig.getAdapter().getEngine());
 
-        if(getAutoIncrement()!=null){
+        if (databaseConfig.getAdapter().getAutoIncrement() != null) {
             sql.append(" AUTO_INCREMENT = ");
-            sql.append(getAutoIncrement());
+            sql.append(databaseConfig.getAdapter().getAutoIncrement());
             sql.append(" ");
         }
 
-        if(getRowFormat()!=null){
+        if (databaseConfig.getAdapter().getRowFormat() != null) {
             sql.append(" ROW_FORMAT = ");
-            sql.append(getRowFormat());
+            sql.append(databaseConfig.getAdapter().getRowFormat());
             sql.append(" ");
         }
 

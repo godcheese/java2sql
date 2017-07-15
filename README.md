@@ -7,5 +7,21 @@
 - 目前组件 Migration（表管理）、Seeder（数据管理）
 
 ## TODO
+<t> 数据表构建
+<#> 数据填充
 
-## USAGE
+## Requirements
+- Windows/Linux/macOS
+- JDK 1.7+
+## Installation
+
+## Quick Start
+
+
+## Changelog
+### 2017.07.15
+- 实现　Migrate、Seed 等基本功能
+## Screenshots
+## Discussing
+- Email:godcheese@outlook.com
+- Homepage:http://www.gioov.com
