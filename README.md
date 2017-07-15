@@ -10,7 +10,7 @@
 - [x] MySqlAdapter
 - [x] Migration
 - [ ] Seeder
-- [ ] Command/Bash 上运行
+- [ ] Console/Terminal 上运行
 - [ ] 优化代码
 
 ## Requirements
