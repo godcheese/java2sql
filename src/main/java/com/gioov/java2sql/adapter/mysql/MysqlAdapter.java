@@ -2,7 +2,6 @@ package com.gioov.java2sql.adapter.mysql;
 
 import com.gioov.java2sql.adapter.DatabaseAdapter;
 
-import java.lang.reflect.Array;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
@@ -73,74 +72,74 @@ public final class MysqlAdapter implements DatabaseAdapter {
     }
 
     @Override
-    public String[] getUnescapeRules(){
+    public String[] getUnescapeRules() {
         return unescapeRules;
     }
 
     @Override
     public MysqlAdapter setUser(String user) {
-        this.user=user;
+        this.user = user;
         return this;
     }
 
     @Override
     public MysqlAdapter setPassword(String password) {
-        this.password=password;
+        this.password = password;
         return this;
     }
 
     @Override
     public MysqlAdapter setName(String name) {
-        this.name=name;
+        this.name = name;
         return this;
     }
 
     @Override
     public MysqlAdapter setHost(String host) {
-        this.host=host;
+        this.host = host;
         return this;
     }
 
     @Override
     public MysqlAdapter setPort(Integer port) {
-        this.port=port;
+        this.port = port;
         return this;
     }
 
     @Override
     public MysqlAdapter setEngine(String engine) {
-        this.engine=engine;
+        this.engine = engine;
         return this;
     }
 
     @Override
     public MysqlAdapter setCharacterSet(String characterSet) {
-        this.characterSet=characterSet;
+        this.characterSet = characterSet;
         return this;
     }
 
     @Override
     public MysqlAdapter setCollate(String collate) {
-        this.collate=collate;
+        this.collate = collate;
         return this;
     }
 
     @Override
     public MysqlAdapter setEscapeRules(String[] escapeRules) {
-        this.escapeRules=escapeRules;
+        this.escapeRules = escapeRules;
         return this;
     }
 
     @Override
     public MysqlAdapter setUnescapeRules(String[] unescapeRules) {
-        this.unescapeRules=unescapeRules;
+        this.unescapeRules = unescapeRules;
         return this;
     }
 
     @Override
     public ArrayList<String> executeSqlBatches(ArrayList<String> batches) {
 
-        if(batches.size()>0) {
+        if (batches.size() > 0) {
             String uri = "jdbc:mysql://" + host + ":" + port + "/" + name;
             String driverClass = "com.mysql.jdbc.Driver";
             Connection connection = null;
@@ -151,7 +150,7 @@ public final class MysqlAdapter implements DatabaseAdapter {
                 connection = DriverManager.getConnection(uri, user, password);
                 statement = connection.createStatement();
 
-                for(String batch : batches){
+                for (String batch : batches) {
                     statement.executeUpdate(batch);
                 }
 

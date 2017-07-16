@@ -17,6 +17,4 @@ public class ForeignKey {
     private String onDelete;
 
 
-
-
 }

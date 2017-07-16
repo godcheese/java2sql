@@ -30,7 +30,7 @@ public class AppTest
      */
     public void testApp() {
 
-        String[] args={"migration:UsersMigration","migrate -single"};
+        String[] args = {"migration:UsersMigration", "migrate -single"};
         App.main(args);
     }
 

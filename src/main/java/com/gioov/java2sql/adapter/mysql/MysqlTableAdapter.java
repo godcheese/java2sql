@@ -1,19 +1,18 @@
 package com.gioov.java2sql.adapter.mysql;
 
 import com.gioov.java2sql.adapter.TableAdapter;
-import javafx.scene.control.Tab;
 
 /**
  * Created by godcheese on 2017/7/15.
  */
-public final class MysqlTableAdapter implements TableAdapter{
+public final class MysqlTableAdapter implements TableAdapter {
 
-    private String name="NewTable";
-    private String characterSet=null;
-    private String collate=null;
-    private Boolean dropIfExists=true;
-    private String rowFormat=null;
-    private Integer autoIncrement=null;
+    private String name = "NewTable";
+    private String characterSet = null;
+    private String collate = null;
+    private Boolean dropIfExists = true;
+    private String rowFormat = null;
+    private Integer autoIncrement = null;
 
 
     @Override
@@ -48,37 +47,37 @@ public final class MysqlTableAdapter implements TableAdapter{
 
     @Override
     public MysqlTableAdapter setName(String name) {
-        this.name=name;
+        this.name = name;
         return this;
     }
 
     @Override
     public MysqlTableAdapter setCharacterSet(String characterSet) {
-        this.characterSet=characterSet;
+        this.characterSet = characterSet;
         return this;
     }
 
     @Override
     public MysqlTableAdapter setCollate(String collate) {
-        this.collate=collate;
+        this.collate = collate;
         return this;
     }
 
     @Override
     public MysqlTableAdapter setDropIfExists(Boolean dropIfExists) {
-        this.dropIfExists=dropIfExists;
+        this.dropIfExists = dropIfExists;
         return this;
     }
 
     @Override
     public MysqlTableAdapter setRowFormat(String rowFormat) {
-        this.rowFormat=rowFormat;
+        this.rowFormat = rowFormat;
         return this;
     }
 
     @Override
     public MysqlTableAdapter setAutoIncrement(Integer autoIncrement) {
-        this.autoIncrement=autoIncrement;
+        this.autoIncrement = autoIncrement;
         return this;
     }
 

@@ -8,19 +8,19 @@ import com.gioov.java2sql.adapter.FieldAdapter;
 public final class MysqlFieldAdapter implements FieldAdapter {
 
 
-    private String name=null;
-    private String type=null;
-    private Integer length=null;
-    private Integer decimal=null;
-    private Boolean isNull=true;
-    private Boolean primaryKey=false;
-    private String comment=null;
-    private String defaultValue=null;
-    private Boolean autoIncrement=false;
-    private  Boolean isUnsigned=null;
-    private Boolean zerofill=false;
-    private String characterSet=null;
-    private String collate=null;
+    private String name = null;
+    private String type = null;
+    private Integer length = null;
+    private Integer decimal = null;
+    private Boolean isNull = true;
+    private Boolean primaryKey = false;
+    private String comment = null;
+    private String defaultValue = null;
+    private Boolean autoIncrement = false;
+    private Boolean isUnsigned = null;
+    private Boolean zerofill = false;
+    private String characterSet = null;
+    private String collate = null;
 
     @Override
     public String getName() {
@@ -89,80 +89,80 @@ public final class MysqlFieldAdapter implements FieldAdapter {
 
     @Override
     public MysqlFieldAdapter setName(String name) {
-        this.name=name;
+        this.name = name;
         return this;
     }
 
     @Override
     public MysqlFieldAdapter setType(String type) {
-        this.type=type;
+        this.type = type;
         return this;
     }
 
     @Override
     public MysqlFieldAdapter setLength(Integer length) {
-        this.length=length;
+        this.length = length;
         return this;
     }
 
     @Override
     public MysqlFieldAdapter setDecimal(Integer decimal) {
-        this.decimal=decimal;
+        this.decimal = decimal;
         return this;
     }
 
     @Override
     public MysqlFieldAdapter setIsNull(Boolean isNull) {
-        this.isNull=isNull;
+        this.isNull = isNull;
         return this;
     }
 
     @Override
     public MysqlFieldAdapter setPrimaryKey(Boolean primaryKey) {
-        this.primaryKey=primaryKey;
+        this.primaryKey = primaryKey;
         return this;
     }
 
     @Override
     public MysqlFieldAdapter setComment(String comment) {
-        this.comment=comment;
+        this.comment = comment;
         return this;
     }
 
     @Override
     public MysqlFieldAdapter setDefaultValue(String defaultValue) {
-        this.defaultValue=defaultValue;
+        this.defaultValue = defaultValue;
         return this;
     }
 
     @Override
     public MysqlFieldAdapter setAutoIncrement(Boolean autoIncrement) {
-        this.autoIncrement=autoIncrement;
+        this.autoIncrement = autoIncrement;
         return this;
     }
 
     @Override
 
     public MysqlFieldAdapter setIsUnsigned(Boolean isUnsigned) {
-        this.isUnsigned=isUnsigned;
+        this.isUnsigned = isUnsigned;
         return this;
     }
 
     @Override
     public MysqlFieldAdapter setZerofill(Boolean zerofill) {
-        this.zerofill=zerofill;
+        this.zerofill = zerofill;
         return this;
     }
 
     @Override
     public MysqlFieldAdapter setCharacterSet(String characterSet) {
-        this.characterSet=characterSet;
+        this.characterSet = characterSet;
         return this;
     }
 
     @Override
     public MysqlFieldAdapter setCollate(String collate) {
-        this.collate=collate;
+        this.collate = collate;
         return this;
     }
 }

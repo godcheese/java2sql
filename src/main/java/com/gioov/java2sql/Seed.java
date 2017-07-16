@@ -19,33 +19,30 @@ public class Seed {
     private ArrayList<String> batches;
 
     /**
-     *
      * @param databaseAdapter DatabaseAdapter
-     * @param table String
-     * @param insertFields String[]
+     * @param table           String
+     * @param insertFields    String[]
      */
-    public Seed(DatabaseAdapter databaseAdapter,String table,String[] insertFields) {
-        insertSql=new StringBuilder();
+    public Seed(DatabaseAdapter databaseAdapter, String table, String[] insertFields) {
+        insertSql = new StringBuilder();
         this.database = databaseAdapter;
-        this.table=table;
-        this.insertFields=insertFields;
-        this.batches =new ArrayList<>();
+        this.table = table;
+        this.insertFields = insertFields;
+        this.batches = new ArrayList<>();
     }
 
     /**
-     *
      * @param databaseAdapter DatabaseAdapter
-     * @param table String
+     * @param table           String
      */
-    public Seed(DatabaseAdapter databaseAdapter,String table) {
-        insertSql=new StringBuilder();
+    public Seed(DatabaseAdapter databaseAdapter, String table) {
+        insertSql = new StringBuilder();
         this.database = databaseAdapter;
-        this.table=table;
-        this.batches =new ArrayList<>();
+        this.table = table;
+        this.batches = new ArrayList<>();
     }
 
     /**
-     *
      * @return String[]
      */
     public String[] getInsertFields() {
@@ -53,7 +50,6 @@ public class Seed {
     }
 
     /**
-     *
      * @param insertFields String[]
      */
     public void setInsertFields(String[] insertFields) {
@@ -108,7 +104,7 @@ public class Seed {
             insertSql.append(fields).append(values).append(";");
 
             batches.add(insertSql.toString());
-            insertSql=new StringBuilder();
+            insertSql = new StringBuilder();
         }
         return this;
     }
@@ -129,14 +125,13 @@ public class Seed {
 //    }
 
     /**
-     *
      * @return String
      */
     public ArrayList<String> execute() {
-        ArrayList<String> arrayList=new ArrayList<>();
+        ArrayList<String> arrayList = new ArrayList<>();
 
-        if(database instanceof MysqlAdapter){
-            arrayList=database.executeSqlBatches(batches);
+        if (database instanceof MysqlAdapter) {
+            arrayList = database.executeSqlBatches(batches);
         }
 
         return arrayList;

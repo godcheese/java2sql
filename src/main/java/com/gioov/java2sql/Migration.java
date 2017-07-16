@@ -6,13 +6,7 @@ import com.gioov.java2sql.adapter.TableAdapter;
 import com.gioov.java2sql.adapter.mysql.MysqlAdapter;
 import com.gioov.java2sql.adapter.mysql.MysqlFieldAdapter;
 
-import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
-import java.sql.Array;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -34,17 +28,16 @@ public final class Migration {
     private FileWriter fileWriter;
 
     /**
-     *
      * @param databaseAdapter DatabaseAdapter
-     * @param tableAdapter TableAdapter
+     * @param tableAdapter    TableAdapter
      */
-    public Migration(DatabaseAdapter databaseAdapter,TableAdapter tableAdapter) {
+    public Migration(DatabaseAdapter databaseAdapter, TableAdapter tableAdapter) {
         fields = new ArrayList<>();
         sql = new StringBuilder();
         dropIfExistsSql = new StringBuilder();
         this.database = databaseAdapter;
         this.table = tableAdapter;
-        this.batches=new ArrayList<>();
+        this.batches = new ArrayList<>();
     }
 
     public StringBuilder getSql() {
@@ -56,7 +49,6 @@ public final class Migration {
     }
 
     /**
-     *
      * @param field FieldAdapter
      * @return Migration
      */
@@ -80,16 +72,16 @@ public final class Migration {
 
         if (tasks.size() > 0) {
 
-            if(table.getDropIfExists()){
+            if (table.getDropIfExists()) {
                 dropIfExistsSql.append(" DROP TABLE IF EXISTS `").append(table.getName()).append("`;");
                 this.batches.add(dropIfExistsSql.toString());
-                dropIfExistsSql=null;
+                dropIfExistsSql = null;
             }
 
 
             sql.append(" CREATE TABLE ")
-                    .append("`").append( table.getName()).append( "`")
-                    .append( " ( ");
+                    .append("`").append(table.getName()).append("`")
+                    .append(" ( ");
 
             for (Object task : tasks) {
 
@@ -124,7 +116,6 @@ public final class Migration {
                     collate = field.getCollate() != null ? field.getCollate().toLowerCase() : database.getCollate().toLowerCase();
                     comment = field.getComment();
                     decimal = field.getDecimal();
-
 
                     sql.append(" `")
                             .append(name)
@@ -220,19 +211,18 @@ public final class Migration {
         }
         sql.append(";");
         batches.add(sql.toString());
-        sql=new StringBuilder();
+        sql = new StringBuilder();
     }
 
     /**
-     *
      * @return String
      */
     public ArrayList<String> execute() {
         processFields(fields);
-        ArrayList<String> arrayList=new ArrayList<>();
+        ArrayList<String> arrayList = new ArrayList<>();
 
-        if(database instanceof MysqlAdapter){
-            arrayList=database.executeSqlBatches(batches);
+        if (database instanceof MysqlAdapter) {
+            arrayList = database.executeSqlBatches(batches);
         }
 
         return arrayList;
