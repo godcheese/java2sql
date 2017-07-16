@@ -29,6 +29,9 @@ public class AppTest
      * Rigourous Test :-)
      */
     public void testApp() {
-        assertTrue(true);
+
+        String[] args={"migration:UsersMigration","migrate -single"};
+        App.main(args);
     }
+
 }

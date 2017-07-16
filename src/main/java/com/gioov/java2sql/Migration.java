@@ -1,7 +1,14 @@
 package com.gioov.java2sql;
 
-import com.gioov.java2sql.migration.Field;
+import com.gioov.java2sql.adapter.DatabaseAdapter;
+import com.gioov.java2sql.adapter.FieldAdapter;
+import com.gioov.java2sql.adapter.TableAdapter;
+import com.gioov.java2sql.adapter.mysql.MysqlFieldAdapter;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -10,34 +17,44 @@ import java.util.Set;
 /**
  * Created by godcheese on 2017/7/14.
  */
-public class Migration {
+public final class Migration {
 
-    private List<Object> tasks;
-    private Object task;
+    private List<Object> fields;
 
-    private DatabaseConfig databaseConfig;
     private StringBuilder sql;
+    private DatabaseAdapter database;
+    private TableAdapter table;
+
+    private FileWriter fileWriter;
+
+    public Migration(DatabaseAdapter databaseAdapter,TableAdapter tableAdapter) {
+        fields = new ArrayList<>();
+        sql = new StringBuilder();
+
+        this.database = databaseAdapter;
+        this.table = tableAdapter;
+
+        File file=new File("");
+        String fileName=file.getAbsolutePath()+System.getProperty("file.separator")+"Migration.sql";
+        try {
+            fileWriter= new FileWriter(fileName);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
 
     public StringBuilder getSql() {
         return sql;
     }
 
-    public void setSql(StringBuilder sql) {
-        this.sql = sql;
+    public List<Object> getFields() {
+        return fields;
     }
 
-    public Migration(DatabaseConfig databaseConfig) {
-        tasks = new ArrayList<>();
-        sql = new StringBuilder();
-        this.databaseConfig = databaseConfig;
-    }
-
-    public List<Object> getTasks() {
-        return tasks;
-    }
-
-    public void setTask(Object task) {
-        tasks.add(task);
+    public Migration addField(FieldAdapter field) {
+        fields.add(field);
+        return this;
     }
 
     public void toSql(List<Object> tasks) {
@@ -53,67 +70,61 @@ public class Migration {
         stringFields.add("char");
         stringFields.add("text");
 
-
         if (tasks.size() > 0) {
             for (Object task : tasks) {
 
-                if (task instanceof Field) {
+                if (task instanceof MysqlFieldAdapter) {
 
                     String name = null;
                     String type = null;
                     Integer length = null;
                     Integer decimal = null;
-                    boolean isNull = false;
-                    boolean primaryKey = false;
+                    String isNull;
+                    Boolean primaryKey = false;
                     String comment = null;
                     String defaultValue = null;
-                    boolean autoIncrement = false;
-                    boolean isUnsigned = false;
-                    boolean isZerofill = false;
+                    String autoIncrement;
+                    Boolean isUnsigned = false;
+                    String isZerofill;
                     String characterSet = null;
                     String collate = null;
 
-                    Field field = (Field) task;
+                    FieldAdapter field = (MysqlFieldAdapter) task;
+
                     name = field.getName();
                     type = field.getType() != null ? field.getType().toLowerCase() : null;
                     length = field.getLength();
-                    autoIncrement = field.isAutoIncrement();
-                    isNull = field.isNull();
-                    primaryKey = field.isPrimaryKey();
+                    autoIncrement = field.getAutoIncrement() ? "" : " AUTO_INCREMENT ";
+                    isNull = field.getIsNull() && !field.getAutoIncrement() ? " NULL " : " NOT NULL ";
+                    primaryKey = field.getPrimaryKey();
                     defaultValue = field.getDefaultValue();
-                    isUnsigned = field.isUnsigned();
-                    isZerofill = field.isZerofill();
-                    characterSet = field.getCharacterSet() != null ? field.getCharacterSet().toLowerCase() : null;
-                    collate = field.getCollate() != null ? field.getCollate().toLowerCase() : null;
+                    isUnsigned = field.getIsUnsigned();
+                    isZerofill = field.getZerofill() ? " ZEROFILL " : "";
+                    characterSet = field.getCharacterSet() != null ? field.getCharacterSet().toLowerCase() : database.getCharacterSet().toLowerCase();
+                    collate = field.getCollate() != null ? field.getCollate().toLowerCase() : database.getCollate().toLowerCase();
                     comment = field.getComment();
                     decimal = field.getDecimal();
 
-                    sql.append(" `");
-                    sql.append(name);
-                    sql.append("`");
-                    sql.append(" ");
-                    sql.append(" ");
-                    sql.append(type);
-                    sql.append("(");
-                    sql.append(length);
-                    sql.append(")");
-
+                    sql.append(" `")
+                            .append(name)
+                            .append("`")
+                            .append(" ")
+                            .append(" ")
+                            .append(type)
+                            .append("(")
+                            .append(length)
+                            .append(")");
 
                     // zerofill 填充零
-                    if (isZerofill) {
-                        sql.append(" ZEROFILL ");
-                    }
-
+                    sql.append(isZerofill);
 
                     // default
                     if (defaultValue != null) {
                         sql.append(" DEFAULT ");
-                        if (defaultValue.equals("null") || defaultValue.equals("NULL")) {
+                        if (defaultValue.toLowerCase().equals("null")) {
                             sql.append(defaultValue);
                         } else {
-                            sql.append("'");
-                            sql.append(defaultValue);
-                            sql.append("'");
+                            sql.append("'").append(defaultValue).append("'");
                         }
                         sql.append(" ");
                     }
@@ -122,14 +133,12 @@ public class Migration {
                     for (String f : numberFields) {
 
                         if (f.toLowerCase().equals(type)) {
-
-
                             if (isUnsigned) {
                                 sql.append(" UNSIGNED ");
                             }
 
                             if (primaryKey) {
-                                sql.append(autoIncrement ? " AUTO_INCREMENT " : "");
+                                sql.append(autoIncrement);
                             }
 
                         }
@@ -141,36 +150,20 @@ public class Migration {
                         if (f.toLowerCase().equals(type)) {
 
                             // character set
-                            sql.append(" CHARACTER SET ");
-                            if (characterSet == null) {
-                                sql.append(databaseConfig.getAdapter().getCharacterSet());
-                            } else {
-                                sql.append(characterSet);
-                            }
-                            sql.append(" ");
+                            sql.append(" CHARACTER SET ").append(characterSet).append(" ");
 
                             // collate
-                            sql.append(" COLLATE ");
-                            if (collate != null) {
-                                sql.append(collate);
-                            } else {
-                                sql.append(databaseConfig.getAdapter().getCollate());
-                            }
-                            sql.append(" ");
+                            sql.append(" COLLATE ").append(collate).append(" ");
+
                         }
                     }
 
                     // not null
-                    sql.append(!isNull ? " NOT NULL " : " NULL ");
-
+                    sql.append(isNull);
 
                     // comment
                     if (comment != null) {
-                        sql.append(" COMMENT ");
-                        sql.append("'");
-                        sql.append(comment);
-                        sql.append("'");
-                        sql.append(" ");
+                        sql.append(" COMMENT ").append("'").append(comment).append("' ");
                     }
 
                     if (primaryKey) {
@@ -184,45 +177,68 @@ public class Migration {
             // 设置 primary key
             if (primaryKeys.size() > 0) {
                 for (String p : primaryKeys) {
-                    sql.append(" PRIMARY KEY ");
-                    sql.append("(`");
-                    sql.append(p);
-                    sql.append("`)");
-                    sql.append(",");
+                    sql.append(" PRIMARY KEY ").append("(`").append(p).append("`)").append(",");
                 }
             }
+
+
+            // 删除sql语句最后一个逗号，防止sql语句报错
             Integer end = sql.lastIndexOf(",");
             sql.delete(end, end + 1);
         }
     }
 
     public String execute() {
-        toSql(tasks);
-        sql.toString();
-        sql.insert(0, " ( ");
-        sql.insert(0, "`");
-        sql.insert(0, databaseConfig.getAdapter().getTable());
-        sql.insert(0, "`");
-        sql.insert(0, " CREATE TABLE ");
+        toSql(fields);
+        sql.insert(0, " ( ")
+                .insert(0, "`").insert(0, table.getName())
+                .insert(0, "`").insert(0, " CREATE TABLE ");
 
+        if(table.getDropIfExists()){
 
-        sql.append(" ) ");
-        sql.append(" ENGINE= ");
-        sql.append(databaseConfig.getAdapter().getEngine());
-
-        if (databaseConfig.getAdapter().getAutoIncrement() != null) {
-            sql.append(" AUTO_INCREMENT = ");
-            sql.append(databaseConfig.getAdapter().getAutoIncrement());
-            sql.append(" ");
+            sql.insert(0,";").insert(0,"`")
+                    .insert(0,table.getName()).insert(0," DROP TABLE IF EXISTS `");
         }
 
-        if (databaseConfig.getAdapter().getRowFormat() != null) {
-            sql.append(" ROW_FORMAT = ");
-            sql.append(databaseConfig.getAdapter().getRowFormat());
-            sql.append(" ");
+        sql.append(" ) ").append(" ENGINE= ").append(database.getEngine());
+
+        if (table.getAutoIncrement() != null) {
+            sql.append(" AUTO_INCREMENT = ").append(table.getAutoIncrement()).append(" ");
+        }
+
+        if (table.getRowFormat() != null) {
+            sql.append(" ROW_FORMAT = ").append(table.getRowFormat()).append(" ");
         }
 
         sql.append(";");
-        return sql.toString();
+
+        String str=sql.toString();
+        writeSqlToFile(str);
+
+        return str;
+    }
+
+    private void writeSqlToFile(String sql){
+        try {
+            String s=sql+System.getProperty("line.separator");
+            fileWriter.write(s);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void finalize(){
+        sql.delete(0,sql.length());
+        this.table=null;
+        this.database=null;
+        try {
+            if(fileWriter!=null) {
+                fileWriter.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

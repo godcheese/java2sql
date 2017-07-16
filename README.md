@@ -20,6 +20,12 @@
 
 ## Quick Start
 
+#### Action
+- migration:UsersMigration 生成 Users 表迁移 class
+- migrate:UsersMigration 迁移 Users 表
+- seed:UsersSeed 生成 Users 表 填充 class
+- seeder:UsersSeed 填充 Users 表数据
+
 
 ## Changelog
 ### 2017.07.15

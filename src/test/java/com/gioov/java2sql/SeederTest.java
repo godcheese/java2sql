@@ -9,7 +9,7 @@ public class SeederTest {
 
 
     @Test
-    public void insertTest() {
+    public void testInsert() {
         Seeder seeder = new Seeder("morse");
         seeder.setTable("test");
         String[] fields = {"id", "name", "price", "show"};
