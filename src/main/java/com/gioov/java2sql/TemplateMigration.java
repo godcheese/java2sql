@@ -22,11 +22,10 @@ public class TemplateMigration {
           */
 
         DatabaseAdapter database=new MySqlAdapter();
-        database.setName("test").setCharacterSet("utf8mb4").setCollate("utf8mb4");
+        database.setName("test").setCharacterSet("utf8mb4").setCollate("utf8mb4_unicode_ci");
         MysqlTableAdapter table =new MysqlTableAdapter();
         table.setName("NewTable");
         Migration migration =new Migration(database,table);
-
 
         /**
          * Init field adapter and set properties

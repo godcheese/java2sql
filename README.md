@@ -1,17 +1,27 @@
-## Java2Sql
-- java2sql-cli
-- 用Java代码生成SQL语句
-- 目前只支持MySQL
+<center># Java2Sql</center>
 
-- 适配器 MySqlAdapter
-- 目前组件 Migration（表管理）、Seeder（数据管理）
+## Introduce
+java2sql 是一款基于java代码开发的多平台程序。通过简单的命令生成和迁移填充数据库数据。
+受 Laravel Artisan Migrate/Seeder 功能启发开发而成。
+----------------------------------------
+## Features
+- 利用简单的 Java 代码书写，Java开发者的自然优越感
+- 用命令行操作，使用更加简单
+- 代码复用率更高
 
 ## TODO
-- [x] MySqlAdapter
+- [x] DatabaseAdapter
+- [x] TableAdapter
+- [x] FieldAdapter
+- [x] MysqlAdapter
+- [x] MysqlTableAdapter
+- [x] MysqlFieldAdapter
 - [x] Migration
-- [ ] Seeder
+- [ ] Seed
+- [ ] 迁移文件、数据填充生成
 - [ ] Console/Terminal 上运行
 - [ ] 优化代码
+- [ ] 进入不定期维护阶段
 
 ## Requirements
 - Windows/Linux/macOS
@@ -24,7 +34,6 @@
 - Ubuntu 
 ## Quick Start
 
-#### Action Command
 - `Seeds` 文件夹存放生成的数据库表填充数据文件
 - `Migrations` 文件夹存放生成的数据表迁移文件
 
