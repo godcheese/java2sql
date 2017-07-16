@@ -21,10 +21,14 @@
 ## Quick Start
 
 #### Action
-- migration:UsersMigration 生成 Users 表迁移 class
-- migrate:UsersMigration 迁移 Users 表
-- seed:UsersSeed 生成 Users 表 填充 class
-- seeder:UsersSeed 填充 Users 表数据
+
+- `Seeds` 文件夹存放生成的数据库表填充数据文件
+- `Migrations` 文件夹存放生成的数据表迁移文件
+
+- `migration:UsersMigration` 生成名为UsersMigration的迁移文件
+- `migrate:UsersMigration` 迁移名为UsersMigration的迁移文件，目标名为Users
+- `seed:UsersSeed` 生成名为UsersSeed的填充文件
+- `seeder:UsersSeed` 填充名为UsersSeed的填充文件，目标表名为Users
 
 
 ## Changelog
