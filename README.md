@@ -1,6 +1,6 @@
 
 ## Introduce
-java2sql 是一款基于java代码开发的多平台程序。通过简单的命令生成和迁移填充数据库数据。
+java2sql 是一款基于java代码开发的数据库命令行构建工具。通过简单的命令生成和迁移填充数据库数据。
 受 Laravel Artisan Migrate/Seeder 功能启发开发而成。
 
 ## Features
