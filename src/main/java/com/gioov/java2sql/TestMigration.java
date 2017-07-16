@@ -2,14 +2,16 @@ package com.gioov.java2sql;
 
 import com.gioov.java2sql.adapter.DatabaseAdapter;
 import com.gioov.java2sql.adapter.FieldAdapter;
-import com.gioov.java2sql.adapter.mysql.MySqlAdapter;
+import com.gioov.java2sql.adapter.mysql.MysqlAdapter;
 import com.gioov.java2sql.adapter.mysql.MysqlFieldAdapter;
 import com.gioov.java2sql.adapter.mysql.MysqlTableAdapter;
+
+import java.util.ArrayList;
 
 /**
  * Created by godcheese on 2017/7/16.
  */
-public class TemplateMigration {
+public class TestMigration {
 
     public static void main(String[] arg){
 
@@ -19,12 +21,12 @@ public class TemplateMigration {
          *  Init table adapter
          *  Init migration
          *
-          */
+         */
 
-        DatabaseAdapter database=new MySqlAdapter();
+        DatabaseAdapter database=new MysqlAdapter();
         database.setName("test").setCharacterSet("utf8mb4").setCollate("utf8mb4_unicode_ci");
         MysqlTableAdapter table =new MysqlTableAdapter();
-        table.setName("NewTable");
+        table.setName("test");
         Migration migration =new Migration(database,table);
 
         /**
@@ -51,20 +53,33 @@ public class TemplateMigration {
 
         FieldAdapter nameField=new MysqlFieldAdapter().setName("name").setType("varchar").setLength(50).setIsNull(false);
 
+        /**
+         * Init field adapter and set properties
+         * Field Name:email
+         * Field Type:varchar
+         * Field Length:50
+         * Filed Null:false
+         *
+         */
+        FieldAdapter emailField=new MysqlFieldAdapter().setName("email").setType("varchar").setLength(50).setIsNull(false);
 
         // Add database table fields
-      String sql=  migration.addField(idField).addField(nameField).execute();
+        ArrayList<String> sqlBatches=  migration.addField(idField).addField(nameField).addField(emailField).execute();
 
-      System.out.println(sql);
+        for(String batch : sqlBatches){
+            System.out.println(batch);
+        }
+
 
         /**
          *
-         *
-         * Result Sql: DROP TABLE IF EXISTS `NewTable`;
-         * CREATE TABLE `NewTable` (  `id`  bigint(20) NOT NULL ,
-         * `name`  varchar(50) CHARACTER SET utf8mb4  COLLATE utf8mb4  NOT NULL ,
-         * PRIMARY KEY (`id`) )
-         * ENGINE= InnoDB;
+         *   -- Result sql
+         *   DROP TABLE IF EXISTS `test`;
+         *   CREATE TABLE `test` (  `id`  bigint(20) NOT NULL ,
+         *   `name`  varchar(50) CHARACTER SET utf8mb4  COLLATE utf8mb4_unicode_ci  NOT NULL ,
+         *   `email`  varchar(50) CHARACTER SET utf8mb4  COLLATE utf8mb4_unicode_ci  NOT NULL ,
+         *   PRIMARY KEY (`id`) )
+         *   ENGINE= InnoDB;
          *
          */
 

@@ -1,6 +1,9 @@
 package com.gioov.java2sql;
 
-import java.util.LinkedHashMap;
+import com.gioov.java2sql.adapter.DatabaseAdapter;
+import com.gioov.java2sql.adapter.mysql.MysqlAdapter;
+
+import java.util.ArrayList;
 
 /**
  * Created by godcheese on 2017/7/14.
@@ -8,58 +11,64 @@ import java.util.LinkedHashMap;
 public class Seed {
 
     private StringBuilder insertSql;
-    private StringBuilder updateSql;
-    private StringBuilder deleteSql;
 
-    private String database;
     private String table;
     private String[] insertFields;
+    private DatabaseAdapter database;
 
-    public Seeder(String database) {
-        insertSql = new StringBuilder();
-        updateSql = new StringBuilder();
-        deleteSql = new StringBuilder();
-        this.database = database;
+    private ArrayList<String> batches;
+
+    /**
+     *
+     * @param databaseAdapter DatabaseAdapter
+     * @param table String
+     * @param insertFields String[]
+     */
+    public Seed(DatabaseAdapter databaseAdapter,String table,String[] insertFields) {
+        insertSql=new StringBuilder();
+        this.database = databaseAdapter;
+        this.table=table;
+        this.insertFields=insertFields;
+        this.batches =new ArrayList<>();
     }
 
-    public String getDatabase() {
-        return database;
+    /**
+     *
+     * @param databaseAdapter DatabaseAdapter
+     * @param table String
+     */
+    public Seed(DatabaseAdapter databaseAdapter,String table) {
+        insertSql=new StringBuilder();
+        this.database = databaseAdapter;
+        this.table=table;
+        this.batches =new ArrayList<>();
     }
 
-    public void setDatabase(String database) {
-        this.database = database;
-    }
-
-    public String getTable() {
-        return table;
-    }
-
-    public void setTable(String table) {
-        this.table = table;
-    }
-
-
+    /**
+     *
+     * @return String[]
+     */
     public String[] getInsertFields() {
         return insertFields;
     }
 
+    /**
+     *
+     * @param insertFields String[]
+     */
     public void setInsertFields(String[] insertFields) {
         this.insertFields = insertFields;
     }
 
-    public void insert(Object[] insertValues) {
+    public Seed insert(Object[] insertValues) {
 
         Integer insertFieldsLength = insertFields.length;
         Integer insertValuesLength = insertValues.length;
 
         if (insertFieldsLength > 0 && insertValuesLength > 0 && insertFieldsLength.equals(insertValuesLength)) {
 
-            insertSql.append(" INSERT INTO ");
-            insertSql.append(" `");
-            insertSql.append(database);
-            insertSql.append("`.`");
-            insertSql.append(table);
-            insertSql.append("` ");
+            insertSql.append(" INSERT INTO ").append(" `")
+                    .append(database.getName()).append("`.`").append(table).append("` ");
 
             StringBuilder fields = new StringBuilder();
             StringBuilder values = new StringBuilder();
@@ -67,9 +76,7 @@ public class Seed {
             values.append(" VALUES(");
 
             for (String field : insertFields) {
-                fields.append("`");
-                fields.append(field);
-                fields.append("`,");
+                fields.append("`").append(field).append("`,");
             }
 
 
@@ -87,9 +94,7 @@ public class Seed {
 
                     values.append(value);
                 } else {
-                    values.append("'");
-                    values.append(value);
-                    values.append("'");
+                    values.append("'").append(value).append("'");
                 }
                 values.append(",");
             }
@@ -100,35 +105,41 @@ public class Seed {
             }
             values.append(")");
 
-            insertSql.append(fields);
-            insertSql.append(values);
-            insertSql.append(";");
+            insertSql.append(fields).append(values).append(";");
+
+            batches.add(insertSql.toString());
+            insertSql=new StringBuilder();
         }
+        return this;
     }
 
-    public void update(LinkedHashMap<String, Object> updateSets, LinkedHashMap<String, Object> updateWhere) {
+//    private Seed update(LinkedHashMap<String, Object> updateSets, LinkedHashMap<String, Object> updateWhere) {
+//
+//        return this;
+//    }
+//
+//    private Seed update(LinkedHashMap<String, Object> updateSets) {
+//
+//        return this;
+//    }
+//
+//    private Seed delete(LinkedHashMap<String, Object> deleteSets) {
+//
+//        return this;
+//    }
 
-    }
+    /**
+     *
+     * @return String
+     */
+    public ArrayList<String> execute() {
+        ArrayList<String> arrayList=new ArrayList<>();
 
+        if(database instanceof MysqlAdapter){
+            arrayList=database.executeSqlBatches(batches);
+        }
 
-    public void update(LinkedHashMap<String, Object> updateSets) {
-
-    }
-
-    public void delete(LinkedHashMap<String, Object> deleteSets) {
-
-    }
-
-
-    public void execute() {
-
-        System.out.println(insertSql);
-        System.out.println(updateSql);
-        System.out.println(deleteSql);
-
-        insertSql = null;
-        updateSql = null;
-        deleteSql = null;
+        return arrayList;
     }
 
 }

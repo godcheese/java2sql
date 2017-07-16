@@ -2,10 +2,16 @@ package com.gioov.java2sql.adapter.mysql;
 
 import com.gioov.java2sql.adapter.DatabaseAdapter;
 
+import java.lang.reflect.Array;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.Statement;
+import java.util.ArrayList;
+
 /**
  * Created by godcheese on 2017/7/15.
  */
-public final class MySqlAdapter implements DatabaseAdapter {
+public final class MysqlAdapter implements DatabaseAdapter {
 
 
     private String user = "root";
@@ -72,62 +78,103 @@ public final class MySqlAdapter implements DatabaseAdapter {
     }
 
     @Override
-    public MySqlAdapter setUser(String user) {
+    public MysqlAdapter setUser(String user) {
         this.user=user;
         return this;
     }
 
     @Override
-    public MySqlAdapter setPassword(String password) {
+    public MysqlAdapter setPassword(String password) {
         this.password=password;
         return this;
     }
 
     @Override
-    public MySqlAdapter setName(String name) {
+    public MysqlAdapter setName(String name) {
         this.name=name;
         return this;
     }
 
     @Override
-    public MySqlAdapter setHost(String host) {
+    public MysqlAdapter setHost(String host) {
         this.host=host;
         return this;
     }
 
     @Override
-    public MySqlAdapter setPort(Integer port) {
+    public MysqlAdapter setPort(Integer port) {
         this.port=port;
         return this;
     }
 
     @Override
-    public MySqlAdapter setEngine(String engine) {
+    public MysqlAdapter setEngine(String engine) {
         this.engine=engine;
         return this;
     }
 
     @Override
-    public MySqlAdapter setCharacterSet(String characterSet) {
+    public MysqlAdapter setCharacterSet(String characterSet) {
         this.characterSet=characterSet;
         return this;
     }
 
     @Override
-    public MySqlAdapter setCollate(String collate) {
+    public MysqlAdapter setCollate(String collate) {
         this.collate=collate;
         return this;
     }
 
     @Override
-    public MySqlAdapter setEscapeRules(String[] escapeRules) {
+    public MysqlAdapter setEscapeRules(String[] escapeRules) {
         this.escapeRules=escapeRules;
         return this;
     }
 
     @Override
-    public MySqlAdapter setUnescapeRules(String[] unescapeRules) {
+    public MysqlAdapter setUnescapeRules(String[] unescapeRules) {
         this.unescapeRules=unescapeRules;
         return this;
     }
+
+    @Override
+    public ArrayList<String> executeSqlBatches(ArrayList<String> batches) {
+
+        if(batches.size()>0) {
+            String uri = "jdbc:mysql://" + host + ":" + port + "/" + name;
+            String driverClass = "com.mysql.jdbc.Driver";
+            Connection connection = null;
+            Statement statement = null;
+
+            try {
+                Class.forName(driverClass);
+                connection = DriverManager.getConnection(uri, user, password);
+                statement = connection.createStatement();
+
+                for(String batch : batches){
+                    statement.executeUpdate(batch);
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+
+                try {
+                    if (connection != null) {
+                        connection.close();
+                    }
+                    if (statement != null) {
+                        statement.close();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+
+                }
+            }
+        }
+
+        return batches;
+    }
+
+
 }

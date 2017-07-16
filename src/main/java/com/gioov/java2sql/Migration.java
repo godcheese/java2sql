@@ -3,12 +3,16 @@ package com.gioov.java2sql;
 import com.gioov.java2sql.adapter.DatabaseAdapter;
 import com.gioov.java2sql.adapter.FieldAdapter;
 import com.gioov.java2sql.adapter.TableAdapter;
+import com.gioov.java2sql.adapter.mysql.MysqlAdapter;
 import com.gioov.java2sql.adapter.mysql.MysqlFieldAdapter;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.sql.Array;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -22,26 +26,25 @@ public final class Migration {
     private List<Object> fields;
 
     private StringBuilder sql;
+    private StringBuilder dropIfExistsSql;
+    private ArrayList<String> batches;
     private DatabaseAdapter database;
     private TableAdapter table;
 
     private FileWriter fileWriter;
 
+    /**
+     *
+     * @param databaseAdapter DatabaseAdapter
+     * @param tableAdapter TableAdapter
+     */
     public Migration(DatabaseAdapter databaseAdapter,TableAdapter tableAdapter) {
         fields = new ArrayList<>();
         sql = new StringBuilder();
-
+        dropIfExistsSql = new StringBuilder();
         this.database = databaseAdapter;
         this.table = tableAdapter;
-
-        File file=new File("");
-        String fileName=file.getAbsolutePath()+System.getProperty("file.separator")+"Migration.sql";
-        try {
-            fileWriter= new FileWriter(fileName);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+        this.batches=new ArrayList<>();
     }
 
     public StringBuilder getSql() {
@@ -52,12 +55,17 @@ public final class Migration {
         return fields;
     }
 
+    /**
+     *
+     * @param field FieldAdapter
+     * @return Migration
+     */
     public Migration addField(FieldAdapter field) {
         fields.add(field);
         return this;
     }
 
-    public void toSql(List<Object> tasks) {
+    public void processFields(List<Object> tasks) {
 
         Set<String> primaryKeys = new LinkedHashSet<>();
 
@@ -71,6 +79,18 @@ public final class Migration {
         stringFields.add("text");
 
         if (tasks.size() > 0) {
+
+            if(table.getDropIfExists()){
+                dropIfExistsSql.append(" DROP TABLE IF EXISTS `").append(table.getName()).append("`;");
+                this.batches.add(dropIfExistsSql.toString());
+                dropIfExistsSql=null;
+            }
+
+
+            sql.append(" CREATE TABLE ")
+                    .append("`").append( table.getName()).append( "`")
+                    .append( " ( ");
+
             for (Object task : tasks) {
 
                 if (task instanceof MysqlFieldAdapter) {
@@ -105,10 +125,10 @@ public final class Migration {
                     comment = field.getComment();
                     decimal = field.getDecimal();
 
+
                     sql.append(" `")
                             .append(name)
                             .append("`")
-                            .append(" ")
                             .append(" ")
                             .append(type)
                             .append("(")
@@ -174,6 +194,7 @@ public final class Migration {
                 sql.append(",");
             }
 
+
             // 设置 primary key
             if (primaryKeys.size() > 0) {
                 for (String p : primaryKeys) {
@@ -185,19 +206,7 @@ public final class Migration {
             // 删除sql语句最后一个逗号，防止sql语句报错
             Integer end = sql.lastIndexOf(",");
             sql.delete(end, end + 1);
-        }
-    }
 
-    public String execute() {
-        toSql(fields);
-        sql.insert(0, " ( ")
-                .insert(0, "`").insert(0, table.getName())
-                .insert(0, "`").insert(0, " CREATE TABLE ");
-
-        if(table.getDropIfExists()){
-
-            sql.insert(0,";").insert(0,"`")
-                    .insert(0,table.getName()).insert(0," DROP TABLE IF EXISTS `");
         }
 
         sql.append(" ) ").append(" ENGINE= ").append(database.getEngine());
@@ -209,36 +218,24 @@ public final class Migration {
         if (table.getRowFormat() != null) {
             sql.append(" ROW_FORMAT = ").append(table.getRowFormat()).append(" ");
         }
-
         sql.append(";");
-
-        String str=sql.toString();
-        writeSqlToFile(str);
-
-        return str;
+        batches.add(sql.toString());
+        sql=new StringBuilder();
     }
 
-    private void writeSqlToFile(String sql){
-        try {
-            String s=sql+System.getProperty("line.separator");
-            fileWriter.write(s);
+    /**
+     *
+     * @return String
+     */
+    public ArrayList<String> execute() {
+        processFields(fields);
+        ArrayList<String> arrayList=new ArrayList<>();
 
-        } catch (IOException e) {
-            e.printStackTrace();
+        if(database instanceof MysqlAdapter){
+            arrayList=database.executeSqlBatches(batches);
         }
 
+        return arrayList;
     }
 
-    public void finalize(){
-        sql.delete(0,sql.length());
-        this.table=null;
-        this.database=null;
-        try {
-            if(fileWriter!=null) {
-                fileWriter.close();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 }

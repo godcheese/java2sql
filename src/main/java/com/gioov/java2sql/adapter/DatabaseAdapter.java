@@ -1,6 +1,9 @@
 package com.gioov.java2sql.adapter;
 
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+
 /**
  * Created by godcheese on 2017/7/15.
  */
@@ -41,4 +44,6 @@ public interface DatabaseAdapter {
     DatabaseAdapter setCollate(String collate);
     DatabaseAdapter setEscapeRules(String[] escapeRules);
     DatabaseAdapter setUnescapeRules(String[] unescapeRules);
+
+    ArrayList<String> executeSqlBatches(ArrayList<String> batches);
 }
