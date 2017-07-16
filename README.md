@@ -1,4 +1,4 @@
-<center># Java2Sql</center>
+# Java2Sql
 
 ## Introduce
 java2sql 是一款基于java代码开发的多平台程序。通过简单的命令生成和迁移填充数据库数据。
@@ -9,7 +9,7 @@ java2sql 是一款基于java代码开发的多平台程序。通过简单的命�
 - 用命令行操作，使用更加简单
 - 代码复用率更高
 
-## TODO
+## Todo
 - [x] DatabaseAdapter
 - [x] TableAdapter
 - [x] FieldAdapter
@@ -49,5 +49,6 @@ java2sql 是一款基于java代码开发的多平台程序。通过简单的命�
 - 实现　Migration、Seeder 等基本功能
 ## Screenshots
 ## Discussing
+- Author:godcheese
 - Email:godcheese@outlook.com
 - Homepage:http://www.gioov.com
