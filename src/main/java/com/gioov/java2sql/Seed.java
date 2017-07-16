@@ -5,7 +5,7 @@ import java.util.LinkedHashMap;
 /**
  * Created by godcheese on 2017/7/14.
  */
-public class Seeder {
+public class Seed {
 
     private StringBuilder insertSql;
     private StringBuilder updateSql;
