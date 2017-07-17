@@ -1,10 +1,8 @@
 package com.gioov.java2sql;
 
-import com.gioov.java2sql.adapter.DatabaseAdapter;
-import com.gioov.java2sql.adapter.mysql.MysqlAdapter;
+
 import org.junit.Test;
 
-import java.util.ArrayList;
 
 /**
  * Created by godcheese on 2017/7/15.
