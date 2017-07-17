@@ -35,23 +35,23 @@ public class AppTest
         App.main(args);
     }
 
-    public void testDirectory(){
+//    public void testDirectory(){
+//
+//        try {
+//            App.directory();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//    }
 
-        try {
-            App.directory();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    public void testCreateNewFile(){
-        try {
-            App.createNewFile("migration","name");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+//    public void testCreateNewFile(){
+//        try {
+//            App.createNewFile("migration","name");
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
 
     public void testCreateNewMigration(){
