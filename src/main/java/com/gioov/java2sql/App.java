@@ -1,6 +1,12 @@
 package com.gioov.java2sql;
 
+import jdk.internal.util.xml.impl.Input;
+
+import java.io.*;
+import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -10,16 +16,27 @@ import java.util.regex.Pattern;
  */
 public class App {
 
-    private final static Integer MIGRATION = 1;
-    private final static Integer SEEDER = 2;
+
+    private static final String MIGRATION="migration";
+    private static final String MIGRATE="migrate";
+    private static final String SEED="seed";
+    private static final String SEEDER="seeder";
+    private static final String FILE_SEPARATOR=System.getProperty("file.separator");
+    private static final String ORIGIN_PATH=new File("").getAbsolutePath();
 
     public static void main(String[] args) {
 
         if (args.length > 0) {
 
+            try {
+                directory();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
             List list = Arrays.asList(args);
             Object action = list.get(0);
-
 
             action = action.toString();
 
@@ -31,48 +48,118 @@ public class App {
             } else if (action.equals("seed")) {
 
             } else {
-                String patternMigration = "^migration:([a-zA-Z0-9]+)$";
-                String patternMigrate = "^migrate:([a-zA-Z0-9]+)$";
 
-                String patternSeed = "^seed:([a-zA-Z0-9]+)$";
-                String patternSeeder = "^seeder:([a-zA-Z0-9]+)$";
 
-                Pattern pattern = Pattern.compile(patternMigration, Pattern.CASE_INSENSITIVE);
-
-                Matcher matcher = pattern.matcher((String) action);
-
-                System.out.println(matcher.matches());
-                if (matcher.matches()) {
-
+                String fileName=null;
+                // 生成数据迁移文件
+                String regexMigration = "^migration:Create([a-zA-Z0-9]+)Table$";
+                Pattern patternMigration = Pattern.compile(regexMigration, Pattern.CASE_INSENSITIVE);
+                Matcher matcherMigration = patternMigration.matcher((String) action);
+                if (matcherMigration.matches()) {
+                    fileName=matcherMigration.group(1);
                 }
+
+                // 执行迁移数据操作
+                String regexMigrate = "^migrate:([a-zA-Z0-9]+)$";
+                Pattern patternMigrate = Pattern.compile(regexMigrate, Pattern.CASE_INSENSITIVE);
+                Matcher matcherMigrate = patternMigrate.matcher((String) action);
+                if (matcherMigrate.matches()) {
+                    fileName=matcherMigrate.group(1);
+                }
+
+                // 生成数据填充文件
+                String regexSeeder = "^seeder:([a-zA-Z0-9]+)$";
+                Pattern patternSeeder = Pattern.compile(regexSeeder, Pattern.CASE_INSENSITIVE);
+                Matcher matcherSeeder = patternSeeder.matcher((String) action);
+                if (matcherSeeder.matches()) {
+                    fileName=matcherSeeder.group(1);
+                }
+
+
+                // 执行数据填充操作
+                String regexSeed = "^seed:([a-zA-Z0-9]+)$";
+                Pattern patternSeed = Pattern.compile(regexSeed, Pattern.CASE_INSENSITIVE);
+                Matcher matcherSeed = patternSeed.matcher((String) action);
+                if (matcherSeed.matches()) {
+                    fileName=matcherSeeder.group(1);
+                }
+
+                System.out.println(fileName);
             }
 
-
-//            String type="";
-//            String command="";
-//
-//            type = args[0].toLowerCase();
-//            if(args[1]!=null){
-//               command = args[1].toLowerCase();
-//            }
-//
-//            switch (type) {
-//
-//                case "migrate":
-//                    System.out.println("Migrate success.");
-//                    break;
-//
-//                case "migrate-single":
-//                    System.out.println("Migrate success :"+command);
-//                    break;
-//
-//                    default:
-//                        System.out.println("Please input a command.");
-//            }
         }
 
     }
 
+
+
+    public static void createNewMigration(String name){
+        SimpleDateFormat sdf=new SimpleDateFormat("yyyyMMddHHmmssSSS");
+        String migrationSortDatetime=sdf.format(System.currentTimeMillis());
+        String pathname="Create"+migrationSortDatetime+name+"";
+    }
+
+
+    public static void executeNewMigration(String name){
+
+    }
+
+
+    public static void createNewSeed(String name){
+
+    }
+    public static void executeNewSeed(String name){
+
+    }
+
+
+    public static void existsFile(String type , String name){
+
+    }
+
+
+    public static void createNewFile(String type , String pathname) throws IOException {
+
+        URL url=App.class.getClassLoader().getResource("CreateTestsTable.javabak");
+        String inputFilename;
+        String outputFilename;
+
+        if((inputFilename=url.getFile())!=null) {
+            outputFilename=ORIGIN_PATH+FILE_SEPARATOR+MIGRATION+"s"+FILE_SEPARATOR+"CreateTestsTable.java";
+
+            String findContentOfDatabaseName = "databaseName";
+            String findContentOfTableName = "tests";
+
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(inputFilename));
+            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(outputFilename));
+
+            String s = null;
+            while ((s = bufferedReader.readLine()) != null) {
+
+                s = s.replaceFirst(findContentOfDatabaseName, "dbname");
+                s = s.replaceFirst(findContentOfTableName, "tablename");
+                bufferedWriter.write(s);
+                bufferedWriter.newLine();
+            }
+
+            bufferedWriter.flush();
+            bufferedWriter.close();
+            bufferedReader.close();
+        }
+    }
+
+
+
+    public static void directory() throws IOException {
+        String[] directories={"migrations","seeds"};
+        for(String directory : directories){
+            String pathname=ORIGIN_PATH+FILE_SEPARATOR+directory;
+            File file=new File(pathname);
+            if(!file.exists() || !file.isDirectory()){
+                file.mkdir();
+            }
+        }
+    }
 
 //    private static void migrateAction(Matcher matcher){
 //

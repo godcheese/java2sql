@@ -4,6 +4,8 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
+import java.io.IOException;
+
 /**
  * Unit test for simple App.
  */
@@ -29,9 +31,31 @@ public class AppTest
      * Rigourous Test :-)
      */
     public void testApp() {
-
-        String[] args = {"migration:UsersMigration", "migrate -single"};
+        String[] args = {"migration:CreateUsersTable", "testDatabase"};
         App.main(args);
+    }
+
+    public void testDirectory(){
+
+        try {
+            App.directory();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void testCreateNewFile(){
+        try {
+            App.createNewFile("migration","name");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public void testCreateNewMigration(){
+
     }
 
 }

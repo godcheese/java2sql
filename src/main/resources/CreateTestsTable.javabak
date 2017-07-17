@@ -7,7 +7,7 @@ import com.gioov.java2sql.adapter.mysql.MysqlTableAdapter;
 /**
  * Created by godcheese on 2017/7/16.
  */
-public class TestMigration {
+public class CreateTestsTable {
 
     public static void main(String[] arg) {
 
@@ -40,15 +40,13 @@ public class TestMigration {
          *
          */
 
-
         DatabaseAdapter database = new MysqlAdapter();
-        database.setName("testDatabase");
+        database.setName("databaseName");
         MysqlTableAdapter table = new MysqlTableAdapter();
-        table.setName("test");
+        table.setName("tests");
         Migration migration = new Migration(database, table);
 
         // migration.addField(Filed field);
-
 
     }
 }
