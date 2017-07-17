@@ -13,7 +13,10 @@ public class SeedTest {
 
 
     @Test
-    public void testSeed(String[] args) {
+    public void testSeed() {
+
+        /**
+         *
 
         // Init DatabaseAdapter
         DatabaseAdapter database = new MysqlAdapter();
@@ -41,5 +44,7 @@ public class SeedTest {
          * INSERT INTO  `test`.`test` (`id`,`name`,`email`) VALUES(2,'tom','1176394803@qq.com');
          *
          */
+
+
     }
 }
