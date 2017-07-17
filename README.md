@@ -1,4 +1,4 @@
-## jav2sql
+# jav2sql
 [![Build Status](https://travis-ci.org/godcheese/java2sql.svg?branch=master)](https://travis-ci.org/godcheese/java2sql)
 ## Introduce
 java2sql 是一款基于java代码开发的数据库命令行构建工具。通过简单的命令生成和迁移填充数据库数据。
