@@ -9,3 +9,7 @@ target/maven-status
 target/surefire-reports
 target/test-classes
 target/original-java2sql-*.jar
+
+migrations
+seeds
+dependency-reduced-pom.xml
