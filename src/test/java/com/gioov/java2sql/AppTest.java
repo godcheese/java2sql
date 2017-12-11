@@ -30,10 +30,10 @@ public class AppTest
     /**
      * Rigourous Test :-)
      */
-    public void testApp() {
-        String[] args = {"migration:CreateUsersTable", "testDatabase"};
-        App.main(args);
-    }
+//     public void testApp() {
+//         String[] args = {"migration:CreateUsersTable", "testDatabase"};
+//         App.main(args);
+//     }
 
 //    public void testDirectory(){
 //
